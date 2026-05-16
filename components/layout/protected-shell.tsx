@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LogOut, Menu, WalletCards, X } from "lucide-react";
@@ -87,7 +88,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
               const isActive = pathname.startsWith(item.href);
 
               return (
-                <a
+                <Link
                   className={`flex items-center gap-3 rounded-md px-3 py-3 text-sm font-semibold transition ${
                     isActive
                       ? "bg-[#e5f4eb] text-[var(--brand-dark)]"
@@ -99,7 +100,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
                   {item.label}
-                </a>
+                </Link>
               );
             })}
           </nav>
