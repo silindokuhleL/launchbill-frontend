@@ -4,6 +4,8 @@ export type AccountSummary = {
   billing_email: string | null;
   status: string;
   is_owner: boolean;
+  roles: string[];
+  permissions: string[];
   theme: {
     primary_color: string | null;
   };
@@ -15,6 +17,7 @@ export type AuthenticatedUser = {
   email: string;
   accounts: AccountSummary[];
   global_roles: string[];
+  global_permissions: string[];
 };
 
 export type AuthSession = {
