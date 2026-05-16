@@ -3,7 +3,6 @@
 import { Bot, CreditCard, Receipt, Users } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
-import { ProtectedShell } from "@/components/layout/protected-shell";
 import { useAuth } from "@/lib/auth-context";
 
 const cards = [
@@ -26,7 +25,7 @@ export default function DashboardPage() {
     : (auth.user?.global_permissions ?? []);
 
   return (
-    <ProtectedShell>
+    <>
       <PageHeader
         eyebrow="Protected dashboard"
         title={`Welcome, ${auth.user?.name ?? "there"}`}
@@ -112,6 +111,6 @@ export default function DashboardPage() {
           title="Ready for core functionality"
         />
       </div>
-    </ProtectedShell>
+    </>
   );
 }

@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
-import { ProtectedShell } from "@/components/layout/protected-shell";
 import { findNavigationItem } from "@/lib/navigation";
 
 type ModulePageProps = {
@@ -17,7 +16,7 @@ export function ModulePage({ actionLabel = "Coming after the API" }: ModulePageP
   const Icon = item.icon;
 
   return (
-    <ProtectedShell>
+    <>
       <PageHeader
         eyebrow="Module placeholder"
         title={item.label}
@@ -32,6 +31,6 @@ export function ModulePage({ actionLabel = "Coming after the API" }: ModulePageP
           {actionLabel}
         </Button>
       </EmptyState>
-    </ProtectedShell>
+    </>
   );
 }
