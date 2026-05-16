@@ -2,14 +2,14 @@
 
 ## Public And Auth
 
-- [ ] Login page.
+- [x] Login page.
 - [ ] Register or invite page.
 - [ ] Forgot password page if auth flow supports it.
-- [ ] Auth error state.
+- [x] Auth error state.
 
 ## Dashboard
 
-- [ ] Dashboard overview page.
+- [x] Dashboard overview page.
 - [ ] Revenue summary cards.
 - [ ] Subscription status chart.
 - [ ] Recent invoices table.
@@ -17,23 +17,23 @@
 
 ## Billing
 
-- [ ] Plans list page.
+- [x] Plans list page.
 - [ ] Create plan form.
 - [ ] Edit plan form.
-- [ ] Customers list page.
+- [x] Customers list page.
 - [ ] Customer detail page.
-- [ ] Subscriptions list page.
+- [x] Subscriptions list page.
 - [ ] Subscription detail page.
-- [ ] Invoices list page.
+- [x] Invoices list page.
 - [ ] Invoice detail page.
-- [ ] Payments list page.
+- [x] Payments list page.
 
 ## Admin
 
-- [ ] Team members page.
+- [x] Team members page.
 - [ ] Role management page.
-- [ ] Settings page.
-- [ ] Audit log page if included.
+- [x] Settings page.
+- [x] Audit log page if included.
 - [ ] Admin portal page.
 - [ ] Theme customization page.
 
@@ -43,15 +43,15 @@
 - [ ] Works at tablet width.
 - [ ] Works at desktop width.
 - [ ] Tables have a mobile strategy.
-- [ ] Navigation is usable on phone.
+- [x] Navigation is usable on phone.
 - [ ] No horizontal page overflow.
 
 ## Frontend Quality
 
-- [ ] Shared types live in `types/`.
+- [x] Shared types live in `types/`.
 - [ ] CRUD types are reused across pages.
-- [ ] API calls use the shared Axios client.
-- [ ] Lucide icons only.
-- [ ] Vitest covers core frontend logic.
+- [x] API calls use the shared Axios client.
+- [x] Lucide icons only.
+- [x] Vitest covers core frontend logic.
 - [ ] Playwright covers critical user flows.
 - [ ] User-facing copy is ready for localization.
