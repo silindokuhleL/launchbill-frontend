@@ -11,46 +11,46 @@
 
 ## Foundation
 
-- [ ] Scaffold Next.js app.
-- [ ] Configure TypeScript.
-- [ ] Configure Tailwind CSS.
+- [x] Scaffold Next.js app.
+- [x] Configure TypeScript.
+- [x] Configure Tailwind CSS.
 - [ ] Configure Coss UI components.
-- [ ] Configure Axios client.
-- [ ] Add shared `types/` folder.
-- [ ] Configure Vitest.
+- [x] Configure Axios client.
+- [x] Add shared `types/` folder.
+- [x] Configure Vitest.
 - [ ] Configure Playwright.
 - [ ] Add localization-ready copy structure.
 
 ## Layout And Components
 
-- [ ] App shell.
-- [ ] Sidebar navigation.
-- [ ] Mobile navigation.
-- [ ] Page header.
+- [x] App shell.
+- [x] Sidebar navigation.
+- [x] Mobile navigation.
+- [x] Page header.
 - [ ] Reusable modal.
 - [ ] Reusable table.
-- [ ] Reusable button.
+- [x] Reusable button.
 - [ ] Reusable tooltip.
 - [ ] Reusable dropdown.
-- [ ] Reusable alert.
-- [ ] Reusable empty state.
+- [x] Reusable alert.
+- [x] Reusable empty state.
 - [ ] Reusable error state.
-- [ ] Reusable skeleton.
+- [x] Reusable skeleton.
 - [ ] ECharts wrapper.
 
 ## Pages
 
-- [ ] Login page.
-- [ ] Dashboard overview.
-- [ ] Plans page.
-- [ ] Customers page.
+- [x] Login page.
+- [x] Dashboard overview.
+- [x] Plans page.
+- [x] Customers page.
 - [ ] Customer detail page.
-- [ ] Subscriptions page.
-- [ ] Invoices page.
-- [ ] Payments page.
-- [ ] Team and roles page.
+- [x] Subscriptions page.
+- [x] Invoices page.
+- [x] Payments page.
+- [x] Team and roles page.
 - [ ] Admin portal page.
-- [ ] Theme customization page.
+- [x] Theme customization page.
 
 ## AI
 
@@ -63,7 +63,7 @@
 
 ## Quality
 
-- [ ] Vitest covers core frontend logic.
+- [x] Vitest covers core frontend logic.
 - [ ] Playwright covers critical flows.
 - [ ] Mobile width checked.
 - [ ] Tablet width checked.
@@ -71,4 +71,3 @@
 - [ ] No horizontal overflow.
 - [ ] README updated.
 - [ ] Frontend docs updated.
-
