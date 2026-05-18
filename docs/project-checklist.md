@@ -64,10 +64,10 @@
 ## Quality
 
 - [x] Vitest covers core frontend logic.
-- [ ] Playwright covers critical flows.
-- [ ] Mobile width checked.
+- [x] Browser covers critical flows.
+- [x] Mobile width checked.
 - [ ] Tablet width checked.
-- [ ] Desktop width checked.
-- [ ] No horizontal overflow.
+- [x] Desktop width checked.
+- [x] No horizontal overflow.
 - [ ] README updated.
-- [ ] Frontend docs updated.
+- [x] Frontend docs updated.

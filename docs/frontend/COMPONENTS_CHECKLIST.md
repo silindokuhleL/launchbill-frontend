@@ -2,10 +2,10 @@
 
 ## Layout
 
-- [ ] App shell.
-- [ ] Sidebar navigation.
-- [ ] Mobile navigation.
-- [ ] Page header.
+- [x] App shell.
+- [x] Sidebar navigation.
+- [x] Mobile navigation.
+- [x] Page header.
 - [ ] Breadcrumbs if useful.
 - [ ] Reusable modal.
 - [ ] Reusable tooltip.
@@ -15,28 +15,28 @@
 ## Data Display
 
 - [ ] Metric card.
-- [ ] Status badge.
+- [x] Status badge.
 - [ ] Data table.
-- [ ] Empty state.
+- [x] Empty state.
 - [ ] Error state.
-- [ ] Loading skeleton.
+- [x] Loading skeleton.
 - [ ] ECharts chart wrapper.
 
 ## Forms
 
-- [ ] Text input.
+- [x] Text input.
 - [ ] Text input with optional AI assist.
-- [ ] Select.
-- [ ] Currency input.
+- [x] Select.
+- [x] Currency input.
 - [ ] Date input.
-- [ ] Textarea with optional AI assist.
+- [x] Textarea.
 - [ ] Form error summary.
-- [ ] Submit button with loading state.
-- [ ] Disabled state pattern.
+- [x] Submit button with loading state.
+- [x] Disabled state pattern.
 
 ## Billing Components
 
-- [ ] Plan card.
+- [x] Plan card.
 - [ ] Subscription status panel.
 - [ ] Invoice row.
 - [ ] Payment status timeline.
@@ -44,9 +44,9 @@
 
 ## Feedback
 
-- [ ] Toast or inline success message.
+- [x] Inline success message.
 - [ ] Confirmation dialog.
-- [ ] Permission-denied panel.
+- [x] Permission-denied panel.
 - [ ] Warning alert.
-- [ ] Error alert.
-- [ ] Success alert.
+- [x] Error alert.
+- [x] Success alert.

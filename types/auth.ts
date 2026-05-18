@@ -1,3 +1,5 @@
+export type { ApiResource } from "@/types/api";
+
 export type AccountSummary = {
   id: number;
   name: string;
@@ -24,10 +26,6 @@ export type AuthSession = {
   token: string;
   token_type: "Bearer";
   user: AuthenticatedUser;
-};
-
-export type ApiResource<T> = {
-  data: T;
 };
 
 export type DemoUser = {

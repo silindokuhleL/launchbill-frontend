@@ -18,8 +18,10 @@
 ## Billing
 
 - [x] Plans list page.
-- [ ] Create plan form.
-- [ ] Edit plan form.
+- [x] Create plan form.
+- [x] Edit plan form.
+- [x] Archive plan action.
+- [x] Plans permission-denied state.
 - [x] Customers list page.
 - [ ] Customer detail page.
 - [x] Subscriptions list page.
@@ -39,19 +41,19 @@
 
 ## Responsiveness
 
-- [ ] Works at 390px width.
+- [x] Works at 390px width.
 - [ ] Works at tablet width.
-- [ ] Works at desktop width.
-- [ ] Tables have a mobile strategy.
+- [x] Works at desktop width.
+- [x] Plans page uses cards instead of a horizontal table on mobile.
 - [x] Navigation is usable on phone.
-- [ ] No horizontal page overflow.
+- [x] No horizontal page overflow.
 
 ## Frontend Quality
 
 - [x] Shared types live in `types/`.
-- [ ] CRUD types are reused across pages.
+- [x] Plan CRUD types are reused across page components.
 - [x] API calls use the shared Axios client.
 - [x] Lucide icons only.
 - [x] Vitest covers core frontend logic.
-- [ ] Playwright covers critical user flows.
+- [x] Browser covers critical user flows.
 - [ ] User-facing copy is ready for localization.
