@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { CustomersClient } from "@/components/customers/customers-client";
 
 export default function CustomersPage() {
-  return <ModulePage actionLabel="Add customers after API resources" />;
+  return <CustomersClient />;
 }
