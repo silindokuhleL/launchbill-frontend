@@ -29,6 +29,10 @@
 - [x] Customers permission-denied state.
 - [ ] Customer detail page.
 - [x] Subscriptions list page.
+- [x] Create subscription form.
+- [x] Cancel subscription action.
+- [x] Resume subscription action.
+- [x] Subscriptions permission-denied state.
 - [ ] Subscription detail page.
 - [x] Invoices list page.
 - [ ] Invoice detail page.
@@ -57,6 +61,7 @@
 - [x] Shared types live in `types/`.
 - [x] Plan CRUD types are reused across page components.
 - [x] Customer CRUD types are reused across page components.
+- [x] Subscription CRUD types are reused across page components.
 - [x] API calls use the shared Axios client.
 - [x] Lucide icons only.
 - [x] Vitest covers core frontend logic.

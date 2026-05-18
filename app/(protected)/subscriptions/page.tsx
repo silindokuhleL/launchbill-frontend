@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { SubscriptionsClient } from "@/components/subscriptions/subscriptions-client";
 
 export default function SubscriptionsPage() {
-  return <ModulePage actionLabel="Add subscriptions after billing rules" />;
+  return <SubscriptionsClient />;
 }

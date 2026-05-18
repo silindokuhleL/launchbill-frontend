@@ -47,6 +47,7 @@
 - [x] Customer create, edit, and archive actions.
 - [ ] Customer detail page.
 - [x] Subscriptions page.
+- [x] Subscription create, cancel, and resume actions.
 - [x] Invoices page.
 - [x] Payments page.
 - [x] Team and roles page.
