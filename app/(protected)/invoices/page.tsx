@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { InvoicesClient } from "@/components/invoices/invoices-client";
 
 export default function InvoicesPage() {
-  return <ModulePage actionLabel="Add invoices after payment models" />;
+  return <InvoicesClient />;
 }
