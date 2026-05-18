@@ -37,6 +37,7 @@
 ## Billing Components
 
 - [x] Plan card.
+- [x] Customer card.
 - [ ] Subscription status panel.
 - [ ] Invoice row.
 - [ ] Payment status timeline.
