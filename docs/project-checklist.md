@@ -44,6 +44,7 @@
 - [x] Dashboard overview.
 - [x] Plans page.
 - [x] Customers page.
+- [x] Customer create, edit, and archive actions.
 - [ ] Customer detail page.
 - [x] Subscriptions page.
 - [x] Invoices page.

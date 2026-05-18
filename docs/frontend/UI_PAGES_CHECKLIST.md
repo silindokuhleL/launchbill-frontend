@@ -23,6 +23,10 @@
 - [x] Archive plan action.
 - [x] Plans permission-denied state.
 - [x] Customers list page.
+- [x] Create customer form.
+- [x] Edit customer form.
+- [x] Archive customer action.
+- [x] Customers permission-denied state.
 - [ ] Customer detail page.
 - [x] Subscriptions list page.
 - [ ] Subscription detail page.
@@ -52,6 +56,7 @@
 
 - [x] Shared types live in `types/`.
 - [x] Plan CRUD types are reused across page components.
+- [x] Customer CRUD types are reused across page components.
 - [x] API calls use the shared Axios client.
 - [x] Lucide icons only.
 - [x] Vitest covers core frontend logic.
