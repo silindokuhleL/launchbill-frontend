@@ -49,6 +49,7 @@
 - [x] Subscriptions page.
 - [x] Subscription create, cancel, and resume actions.
 - [x] Invoices page.
+- [x] Invoice detail view.
 - [x] Payments page.
 - [x] Team and roles page.
 - [ ] Admin portal page.

@@ -39,7 +39,8 @@
 - [x] Plan card.
 - [x] Customer card.
 - [x] Subscription status panel.
-- [ ] Invoice row.
+- [x] Invoice card.
+- [x] Invoice detail modal.
 - [ ] Payment status timeline.
 - [ ] Failed payment alert.
 
