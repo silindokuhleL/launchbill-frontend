@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { PlansClient } from "@/components/plans/plans-client";
 
 export default function PlansPage() {
-  return <ModulePage actionLabel="Add plans after backend services" />;
+  return <PlansClient />;
 }
