@@ -37,6 +37,7 @@
 - [x] Invoices list page.
 - [x] Invoice detail view.
 - [x] Payments list page.
+- [x] Payment detail view.
 
 ## Admin
 
@@ -63,6 +64,7 @@
 - [x] Customer CRUD types are reused across page components.
 - [x] Subscription CRUD types are reused across page components.
 - [x] Invoice types are reused across page components.
+- [x] Payment types are reused across page components.
 - [x] API calls use the shared Axios client.
 - [x] Lucide icons only.
 - [x] Vitest covers core frontend logic.
