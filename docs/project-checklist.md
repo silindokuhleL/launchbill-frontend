@@ -63,7 +63,7 @@
 ## AI
 
 - [x] Billing summary assistant UI.
-- [ ] Payment failure draft assistant UI.
+- [x] Payment failure draft assistant UI.
 - [ ] Admin activity insight UI.
 - [x] AI loading states.
 - [x] AI error states.

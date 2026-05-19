@@ -6,3 +6,9 @@ export type BillingSummaryDraft = {
   narrative: string;
   nextActions: string[];
 };
+
+export type PaymentFailureDraft = {
+  subject: string;
+  body: string;
+  nextActions: string[];
+};

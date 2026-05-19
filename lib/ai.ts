@@ -1,6 +1,6 @@
 import { dashboardHealthLabel } from "@/lib/dashboard";
 import { invoiceBalanceCents } from "@/lib/invoices";
-import type { BillingSummaryDraft } from "@/types/ai";
+import type { BillingSummaryDraft, PaymentFailureDraft } from "@/types/ai";
 import type { DashboardSummary } from "@/types/dashboard";
 import type { Invoice } from "@/types/invoices";
 import type { Payment } from "@/types/payments";
@@ -52,6 +52,36 @@ export function billingSummaryToEditableText(draft: BillingSummaryDraft) {
     "Recommended next actions:",
     ...draft.nextActions.map((action, index) => `${index + 1}. ${action}`),
   ].join("\n");
+}
+
+export function generatePaymentFailureDraft(payment: Payment): PaymentFailureDraft {
+  const customerName = payment.customer?.name ?? "there";
+  const invoiceLabel = payment.invoice?.number ?? `invoice #${payment.invoice_id}`;
+  const amount = `${payment.currency} ${payment.amount}`;
+  const failureReason = payment.failure_reason ?? "the payment could not be completed";
+
+  return {
+    subject: `Payment follow-up for ${invoiceLabel}`,
+    body: [
+      `Hi ${customerName},`,
+      "",
+      `We noticed that the recent ${amount} payment for ${invoiceLabel} did not go through. The provider message was: ${failureReason}.`,
+      "",
+      "Could you please retry the payment or let us know if you need the billing details resent?",
+      "",
+      "Thank you,",
+      "LaunchBill Billing Team",
+    ].join("\n"),
+    nextActions: [
+      "Confirm the invoice and payment details before sending.",
+      "Check whether the customer already retried the payment.",
+      "Edit the message tone before using it with the customer.",
+    ],
+  };
+}
+
+export function paymentFailureDraftToEditableText(draft: PaymentFailureDraft) {
+  return [`Subject: ${draft.subject}`, "", draft.body].join("\n");
 }
 
 function getBillingRiskLevel(summary: DashboardSummary) {
