@@ -28,7 +28,7 @@
 - [x] Edit customer form.
 - [x] Archive customer action.
 - [x] Customers permission-denied state.
-- [ ] Customer detail page.
+- [x] Customer detail page.
 - [x] Subscriptions list page.
 - [x] Create subscription form.
 - [x] Cancel subscription action.

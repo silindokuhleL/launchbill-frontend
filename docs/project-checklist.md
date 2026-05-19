@@ -48,7 +48,7 @@
 - [x] Plans page.
 - [x] Customers page.
 - [x] Customer create, edit, and archive actions.
-- [ ] Customer detail page.
+- [x] Customer detail page.
 - [x] Subscriptions page.
 - [x] Subscription create, cancel, and resume actions.
 - [x] Invoices page.
