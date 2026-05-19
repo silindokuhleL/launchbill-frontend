@@ -9,12 +9,15 @@ import {
   CheckCircle2,
   ClipboardList,
   FileText,
+  ShieldCheck,
   RefreshCcw,
   Sparkles,
   Wand2,
 } from "lucide-react";
 import {
+  adminActivityInsightToEditableText,
   billingSummaryToEditableText,
+  generateAdminActivityInsight,
   generateBillingSummaryDraft,
 } from "@/lib/ai";
 import { formatDashboardMoney, getDashboardSummary } from "@/lib/dashboard";
@@ -25,7 +28,11 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
-import type { BillingSummaryDraft, BillingRiskLevel } from "@/types/ai";
+import type {
+  AdminActivityInsight,
+  BillingSummaryDraft,
+  BillingRiskLevel,
+} from "@/types/ai";
 import type { DashboardSummary } from "@/types/dashboard";
 import type { Invoice } from "@/types/invoices";
 import type { Payment } from "@/types/payments";
@@ -46,9 +53,12 @@ export function BillingSummaryAssistant() {
   const auth = useAuth();
   const [billingData, setBillingData] = useState<BillingData | null>(null);
   const [draft, setDraft] = useState<BillingSummaryDraft | null>(null);
+  const [adminInsight, setAdminInsight] = useState<AdminActivityInsight | null>(null);
   const [editableSummary, setEditableSummary] = useState("");
+  const [editableAdminInsight, setEditableAdminInsight] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingAdmin, setIsGeneratingAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const activeAccount = useMemo(
@@ -57,6 +67,11 @@ export function BillingSummaryAssistant() {
   );
   const canUseBillingSummary = Boolean(
     activeAccount?.permissions.includes("ai.billing_summary"),
+  );
+  const canUseAdminInsight = Boolean(
+    activeAccount?.permissions.includes("audit.view") ||
+      activeAccount?.permissions.includes("roles.manage") ||
+      auth.user?.global_roles.includes("super_admin"),
   );
 
   useEffect(() => {
@@ -120,6 +135,34 @@ export function BillingSummaryAssistant() {
       setError("The billing summary assistant could not generate a draft.");
     } finally {
       setIsGenerating(false);
+    }
+  }
+
+  async function handleGenerateAdminInsight() {
+    if (!billingData || !activeAccount || !auth.user) {
+      setError("Admin activity context is not ready yet.");
+      return;
+    }
+
+    setIsGeneratingAdmin(true);
+    setError(null);
+
+    try {
+      await new Promise((resolve) => window.setTimeout(resolve, 350));
+      const nextInsight = generateAdminActivityInsight({
+        account: activeAccount,
+        invoices: billingData.invoices,
+        payments: billingData.payments,
+        summary: billingData.summary,
+        user: auth.user,
+      });
+
+      setAdminInsight(nextInsight);
+      setEditableAdminInsight(adminActivityInsightToEditableText(nextInsight));
+    } catch {
+      setError("The admin activity assistant could not generate insight.");
+    } finally {
+      setIsGeneratingAdmin(false);
     }
   }
 
@@ -261,6 +304,109 @@ export function BillingSummaryAssistant() {
               </div>
             )}
           </section>
+
+          <section className="rounded-lg border border-[var(--border)] bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+                  Admin activity insight
+                </p>
+                <h2 className="mt-2 text-xl font-bold text-[#102019]">
+                  Account and permission review
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  Summarize tenant activity, visible roles, permissions, and admin
+                  follow-up signals from returned account data.
+                </p>
+              </div>
+              {adminInsight ? (
+                <span
+                  className={`w-fit rounded-md px-3 py-2 text-sm font-bold ${riskStyles[adminInsight.riskLevel]}`}
+                >
+                  {adminInsight.riskLevel}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="mt-5 grid gap-3 text-sm text-[#102019] md:grid-cols-3">
+              <AdminMetric
+                label="Roles"
+                value={
+                  activeAccount?.roles.length
+                    ? activeAccount.roles.join(", ")
+                    : auth.user?.global_roles.join(", ") || "No role assigned"
+                }
+              />
+              <AdminMetric
+                label="Permissions"
+                value={String(
+                  activeAccount?.permissions.length ||
+                    auth.user?.global_permissions.length ||
+                    0,
+                )}
+              />
+              <AdminMetric label="Account status" value={activeAccount?.status ?? "Unknown"} />
+            </div>
+
+            {!canUseAdminInsight ? (
+              <div className="mt-5 rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-4 text-sm font-semibold text-[var(--muted)]">
+                Admin activity insights require audit or role-management access.
+              </div>
+            ) : (
+              <>
+                <div className="mt-5">
+                  <Button
+                    disabled={!billingData}
+                    isLoading={isGeneratingAdmin}
+                    onClick={handleGenerateAdminInsight}
+                    variant="secondary"
+                  >
+                    <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                    Generate admin insight
+                  </Button>
+                </div>
+
+                {adminInsight ? (
+                  <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_320px]">
+                    <label className="block">
+                      <span className="text-sm font-bold text-[#102019]">
+                        Review and edit insight
+                      </span>
+                      <textarea
+                        className="mt-2 min-h-72 w-full resize-y rounded-md border border-[var(--border)] bg-[#fbfdfc] p-4 text-sm leading-6 text-[#102019] outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#b7d8c3]"
+                        onChange={(event) => setEditableAdminInsight(event.target.value)}
+                        value={editableAdminInsight}
+                      />
+                    </label>
+                    <div className="rounded-md bg-[#f4fbf6] p-4">
+                      <p className="text-sm font-bold text-[#102019]">Admin actions</p>
+                      <ul className="mt-3 grid gap-3 text-sm leading-6 text-[var(--muted)]">
+                        {adminInsight.nextActions.map((action) => (
+                          <li className="flex gap-2" key={action}>
+                            <Sparkles
+                              className="mt-1 h-4 w-4 shrink-0 text-[var(--brand)]"
+                              aria-hidden="true"
+                            />
+                            <span>{action}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mt-5 grid gap-2">
+                        <AiLink href="/audit" label="Review audit" />
+                        <AiLink href="/team" label="Review team" />
+                        <AiLink href="/settings" label="Review settings" />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-5 rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-6 text-sm leading-6 text-[var(--muted)]">
+                    Generate an admin insight when you need a quick release or
+                    access-control review.
+                  </div>
+                )}
+              </>
+            )}
+          </section>
         </div>
       ) : (
         <div className="mt-5">
@@ -272,6 +418,17 @@ export function BillingSummaryAssistant() {
         </div>
       )}
     </>
+  );
+}
+
+function AdminMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-[#f4fbf6] p-3">
+      <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
+        {label}
+      </p>
+      <p className="mt-1 break-words font-bold text-[#102019]">{value}</p>
+    </div>
   );
 }
 

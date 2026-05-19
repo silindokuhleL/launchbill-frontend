@@ -1,6 +1,11 @@
 import { dashboardHealthLabel } from "@/lib/dashboard";
 import { invoiceBalanceCents } from "@/lib/invoices";
-import type { BillingSummaryDraft, PaymentFailureDraft } from "@/types/ai";
+import type {
+  AdminActivityInsight,
+  BillingSummaryDraft,
+  PaymentFailureDraft,
+} from "@/types/ai";
+import type { AccountSummary, AuthenticatedUser } from "@/types/auth";
 import type { DashboardSummary } from "@/types/dashboard";
 import type { Invoice } from "@/types/invoices";
 import type { Payment } from "@/types/payments";
@@ -9,6 +14,14 @@ type BillingSummaryInput = {
   invoices: Invoice[];
   payments: Payment[];
   summary: DashboardSummary;
+};
+
+type AdminActivityInsightInput = {
+  account: AccountSummary;
+  invoices: Invoice[];
+  payments: Payment[];
+  summary: DashboardSummary;
+  user: AuthenticatedUser;
 };
 
 export function generateBillingSummaryDraft({
@@ -84,6 +97,54 @@ export function paymentFailureDraftToEditableText(draft: PaymentFailureDraft) {
   return [`Subject: ${draft.subject}`, "", draft.body].join("\n");
 }
 
+export function generateAdminActivityInsight({
+  account,
+  invoices,
+  payments,
+  summary,
+  user,
+}: AdminActivityInsightInput): AdminActivityInsight {
+  const overdueInvoices = invoices.filter((invoice) => invoice.status === "overdue");
+  const failedPayments = payments.filter((payment) => payment.status === "failed");
+  const riskLevel = getBillingRiskLevel(summary);
+  const roleLabel = account.roles.length
+    ? account.roles.join(", ")
+    : user.global_roles.join(", ") || "No role assigned";
+  const permissionCount =
+    account.permissions.length || user.global_permissions.length;
+
+  return {
+    title:
+      riskLevel === "attention"
+        ? "Admin attention recommended"
+        : "Admin activity is stable",
+    riskLevel,
+    narrative: [
+      `${account.name} is ${account.status} and your current access is ${roleLabel}.`,
+      `This account exposes ${permissionCount} permissions for the active session, with ${summary.customers.total} customers, ${summary.subscriptions.total} subscriptions, and ${summary.invoices.total} invoices in scope.`,
+      `Current operational pressure: ${countLabel(overdueInvoices.length, "overdue invoice")} and ${countLabel(failedPayments.length, "failed payment")}.`,
+    ].join(" "),
+    nextActions: buildAdminActions({
+      account,
+      failedPaymentCount: failedPayments.length,
+      overdueInvoiceCount: overdueInvoices.length,
+      summary,
+      user,
+    }),
+  };
+}
+
+export function adminActivityInsightToEditableText(insight: AdminActivityInsight) {
+  return [
+    insight.title,
+    "",
+    insight.narrative,
+    "",
+    "Recommended admin actions:",
+    ...insight.nextActions.map((action, index) => `${index + 1}. ${action}`),
+  ].join("\n");
+}
+
 function getBillingRiskLevel(summary: DashboardSummary) {
   if (summary.invoices.overdue > 0 || summary.payments.failed > 0) {
     return "attention";
@@ -135,6 +196,46 @@ function buildNextActions({
 
   if (actions.length === 0) {
     actions.push("Keep monitoring billing health and prepare the next revenue review.");
+  }
+
+  return actions;
+}
+
+function buildAdminActions({
+  account,
+  failedPaymentCount,
+  overdueInvoiceCount,
+  summary,
+  user,
+}: {
+  account: AccountSummary;
+  failedPaymentCount: number;
+  overdueInvoiceCount: number;
+  summary: DashboardSummary;
+  user: AuthenticatedUser;
+}) {
+  const actions: string[] = [];
+
+  if (!account.is_owner && !user.global_roles.includes("super_admin")) {
+    actions.push("Confirm whether this user needs owner-level access before changing roles.");
+  }
+
+  if (failedPaymentCount > 0 || overdueInvoiceCount > 0) {
+    actions.push("Review billing exceptions before changing account configuration.");
+  }
+
+  if (summary.subscriptions.paused > 0) {
+    actions.push(
+      `Check ${countLabel(summary.subscriptions.paused, "paused subscription")} for admin or billing follow-up.`,
+    );
+  }
+
+  if (account.permissions.length === 0 && user.global_permissions.length === 0) {
+    actions.push("Review permission seeding because no permissions are visible in this session.");
+  }
+
+  if (actions.length === 0) {
+    actions.push("Keep monitoring admin activity and audit readiness during each release.");
   }
 
   return actions;
