@@ -12,3 +12,10 @@ export type PaymentFailureDraft = {
   body: string;
   nextActions: string[];
 };
+
+export type AdminActivityInsight = {
+  title: string;
+  riskLevel: BillingRiskLevel;
+  narrative: string;
+  nextActions: string[];
+};
