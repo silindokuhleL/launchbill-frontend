@@ -32,6 +32,8 @@ Frontend responsibilities:
 
 ### Admin Activity Insight Assistant
 
+Status: implemented in the frontend as an editable admin insight panel on the AI Assist page. It uses returned account roles, permissions, billing health, invoice status, and payment status.
+
 Helps admins understand key account and tenant activity.
 
 Frontend responsibilities:
@@ -39,6 +41,7 @@ Frontend responsibilities:
 - Show generated insight panel.
 - Keep tenant and permission state clear.
 - Never show data the backend does not return.
+- Let the user edit the generated insight before using it.
 
 ## AI UI Rules
 
