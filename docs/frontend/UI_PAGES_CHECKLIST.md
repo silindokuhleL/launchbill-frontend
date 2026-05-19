@@ -34,7 +34,7 @@
 - [x] Cancel subscription action.
 - [x] Resume subscription action.
 - [x] Subscriptions permission-denied state.
-- [ ] Subscription detail page.
+- [x] Subscription detail page.
 - [x] Invoices list page.
 - [x] Invoice detail view.
 - [x] Payments list page.

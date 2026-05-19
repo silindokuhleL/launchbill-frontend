@@ -51,6 +51,7 @@
 - [x] Customer detail page.
 - [x] Subscriptions page.
 - [x] Subscription create, cancel, and resume actions.
+- [x] Subscription detail page.
 - [x] Invoices page.
 - [x] Invoice detail view.
 - [x] Payments page.
