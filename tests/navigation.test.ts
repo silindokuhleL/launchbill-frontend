@@ -13,6 +13,7 @@ describe("navigationItems", () => {
       "/team",
       "/audit",
       "/ai",
+      "/admin",
       "/settings",
     ]);
   });
