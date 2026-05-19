@@ -2,7 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AxiosError } from "axios";
-import { Building2, Edit3, Mail, Phone, Plus, Trash2, Users } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Building2,
+  Edit3,
+  Mail,
+  Phone,
+  Plus,
+  Trash2,
+  Users,
+} from "lucide-react";
 import {
   archiveCustomer,
   createCustomer,
@@ -259,6 +269,13 @@ export function CustomersClient() {
                 ) : null}
 
                 <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                  <Link
+                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[#102019] transition hover:bg-[#eef7f1] sm:w-auto"
+                    href={`/customers/${customer.id}`}
+                  >
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    View detail
+                  </Link>
                   <Button
                     className="w-full sm:w-auto"
                     disabled={isSubmitting}
