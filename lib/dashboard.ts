@@ -1,6 +1,7 @@
 import { api } from "@/lib/api";
 import type { ApiResource } from "@/types/api";
 import type { DashboardSummary } from "@/types/dashboard";
+import type { Invoice } from "@/types/invoices";
 
 export type DashboardChartDatum = {
   color: string;
@@ -86,4 +87,26 @@ export function paymentHealthSeries(summary: DashboardSummary): DashboardChartDa
       value: summary.payments.refunded,
     },
   ];
+}
+
+export function recentInvoicesForDashboard(invoices: Invoice[], limit = 5) {
+  return [...invoices]
+    .sort((left, right) => invoiceTimestamp(right) - invoiceTimestamp(left))
+    .slice(0, limit);
+}
+
+export function formatDashboardDate(value: string | null) {
+  if (!value) {
+    return "Not set";
+  }
+
+  return new Intl.DateTimeFormat("en-ZA", {
+    dateStyle: "medium",
+  }).format(new Date(value));
+}
+
+function invoiceTimestamp(invoice: Invoice) {
+  return new Date(
+    invoice.issued_at ?? invoice.due_at ?? invoice.created_at ?? 0,
+  ).getTime();
 }
