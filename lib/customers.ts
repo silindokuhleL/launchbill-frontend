@@ -8,6 +8,12 @@ export async function listCustomers() {
   return response.data.data;
 }
 
+export async function getCustomer(customerId: number) {
+  const response = await api.get<ApiResource<Customer>>(`/customers/${customerId}`);
+
+  return response.data.data;
+}
+
 export async function createCustomer(payload: CustomerPayload) {
   const response = await api.post<ApiResource<Customer>>("/customers", payload);
 
@@ -78,4 +84,8 @@ export function formatCustomerAddress(customer: Pick<Customer, "billing_address"
   ]
     .filter(Boolean)
     .join(", ");
+}
+
+export function customerStatusLabel(status: Customer["status"]) {
+  return status.replace(/^\w/, (letter) => letter.toUpperCase());
 }
