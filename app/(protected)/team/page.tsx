@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { RoleManagementClient } from "@/components/team/role-management-client";
 
 export default function TeamPage() {
-  return <ModulePage actionLabel="Add team management after policies" />;
+  return <RoleManagementClient />;
 }
