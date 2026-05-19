@@ -43,7 +43,7 @@
 ## Admin
 
 - [x] Team members page.
-- [ ] Role management page.
+- [x] Role management page.
 - [x] Settings page.
 - [x] Audit log page if included.
 - [x] Admin portal page.
