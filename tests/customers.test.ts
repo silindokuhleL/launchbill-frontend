@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  customerStatusLabel,
   customerToFormValues,
   formatCustomerAddress,
   formValuesToCustomerPayload,
@@ -84,5 +85,10 @@ describe("customer helpers", () => {
       "10 Loop Street, Cape Town, Western Cape, 8001, ZA",
     );
     expect(formatCustomerAddress({ billing_address: {} })).toBe("");
+  });
+
+  it("formats customer status labels", () => {
+    expect(customerStatusLabel("active")).toBe("Active");
+    expect(customerStatusLabel("inactive")).toBe("Inactive");
   });
 });
