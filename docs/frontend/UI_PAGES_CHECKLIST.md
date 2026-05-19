@@ -11,9 +11,10 @@
 
 - [x] Dashboard overview page.
 - [x] Revenue summary cards.
-- [ ] Subscription status chart.
+- [x] Subscription status chart.
 - [ ] Recent invoices table.
 - [x] Failed payment alert.
+- [x] Payment health chart.
 
 ## Billing
 
