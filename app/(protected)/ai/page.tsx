@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { BillingSummaryAssistant } from "@/components/ai/billing-summary-assistant";
 
 export default function AiPage() {
-  return <ModulePage actionLabel="Add AI assist after backend endpoints" />;
+  return <BillingSummaryAssistant />;
 }
