@@ -19,12 +19,14 @@ Frontend responsibilities:
 
 ### Payment Failure Draft Assistant
 
+Status: implemented in the frontend as an editable draft modal on failed payment cards. The assistant uses the selected payment, invoice, customer, amount, and failure reason.
+
 Helps draft customer follow-up messages for failed payments.
 
 Frontend responsibilities:
 
-- Add AI assist button to the message textarea.
-- Preview generated draft.
+- Add AI assist button to failed payment cards.
+- Preview generated draft in a modal.
 - Let user edit before sending or saving.
 - Show disabled/loading/error states.
 
