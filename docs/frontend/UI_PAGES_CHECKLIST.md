@@ -46,7 +46,7 @@
 - [ ] Role management page.
 - [x] Settings page.
 - [x] Audit log page if included.
-- [ ] Admin portal page.
+- [x] Admin portal page.
 - [ ] Theme customization page.
 
 ## Responsiveness
