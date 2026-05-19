@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AxiosError } from "axios";
-import { CreditCard, Eye, RefreshCcw } from "lucide-react";
+import { Bot, CreditCard, Eye, RefreshCcw } from "lucide-react";
 import {
   formatPaymentAmount,
   getPayment,
@@ -15,6 +15,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
+import { PaymentFailureDraftModal } from "@/components/ai/payment-failure-draft-modal";
 import { PaymentDetailModal } from "@/components/payments/payment-detail-modal";
 import type { Payment, PaymentStatus } from "@/types/payments";
 
@@ -29,6 +30,7 @@ export function PaymentsClient() {
   const auth = useAuth();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [draftPayment, setDraftPayment] = useState<Payment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +41,9 @@ export function PaymentsClient() {
   );
   const canViewPayments = Boolean(
     activeAccount?.permissions.includes("payments.view"),
+  );
+  const canDraftPaymentFailures = Boolean(
+    activeAccount?.permissions.includes("ai.payment_failure_draft"),
   );
 
   const loadPayments = useCallback(async () => {
@@ -209,6 +214,16 @@ export function PaymentsClient() {
                   <Eye className="h-4 w-4" aria-hidden="true" />
                   View details
                 </Button>
+                {payment.status === "failed" && canDraftPaymentFailures ? (
+                  <Button
+                    className="w-full sm:w-auto"
+                    onClick={() => setDraftPayment(payment)}
+                    variant="secondary"
+                  >
+                    <Bot className="h-4 w-4" aria-hidden="true" />
+                    Draft follow-up
+                  </Button>
+                ) : null}
               </div>
             </article>
           ))}
@@ -220,6 +235,13 @@ export function PaymentsClient() {
           isLoading={isDetailLoading}
           onClose={() => setSelectedPayment(null)}
           payment={selectedPayment}
+        />
+      ) : null}
+
+      {draftPayment ? (
+        <PaymentFailureDraftModal
+          onClose={() => setDraftPayment(null)}
+          payment={draftPayment}
         />
       ) : null}
     </>
