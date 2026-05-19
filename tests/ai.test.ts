@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  adminActivityInsightToEditableText,
   billingSummaryToEditableText,
+  generateAdminActivityInsight,
   generateBillingSummaryDraft,
   generatePaymentFailureDraft,
   paymentFailureDraftToEditableText,
@@ -160,5 +162,42 @@ describe("AI billing helpers", () => {
     expect(draft.body).toContain("Naledi Mokoena");
     expect(draft.body).toContain("Insufficient funds");
     expect(paymentFailureDraftToEditableText(draft)).toContain("Subject:");
+  });
+
+  it("generates an editable admin activity insight", () => {
+    const insight = generateAdminActivityInsight({
+      account: {
+        billing_email: "billing@example.test",
+        id: 1,
+        is_owner: true,
+        name: "Acme LaunchBill Demo",
+        permissions: ["audit.view", "roles.manage"],
+        roles: ["account_owner"],
+        status: "active",
+        theme: {
+          primary_color: "#0f6b3d",
+        },
+      },
+      invoices: [invoice],
+      payments: [payment],
+      summary,
+      user: {
+        accounts: [],
+        email: "owner@launchbill.test",
+        global_permissions: [],
+        global_roles: [],
+        id: 1,
+        name: "LaunchBill Account Owner",
+      },
+    });
+
+    expect(insight.riskLevel).toBe("attention");
+    expect(insight.narrative).toContain("account_owner");
+    expect(insight.nextActions).toEqual(
+      expect.arrayContaining([expect.stringContaining("billing exceptions")]),
+    );
+    expect(adminActivityInsightToEditableText(insight)).toContain(
+      "Recommended admin actions",
+    );
   });
 });
