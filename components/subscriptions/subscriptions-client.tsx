@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AxiosError } from "axios";
+import Link from "next/link";
 import {
+  ArrowRight,
   CalendarClock,
   Plus,
   RotateCcw,
@@ -15,6 +17,8 @@ import {
   cancelSubscription,
   createSubscription,
   formatSubscriptionAmount,
+  formatSubscriptionDate,
+  formatSubscriptionPeriod,
   listSubscriptions,
   resumeSubscription,
   statusLabel,
@@ -285,18 +289,25 @@ export function SubscriptionsClient() {
                 <SubscriptionMetric label="Quantity" value={String(subscription.quantity)} />
                 <SubscriptionMetric
                   label="Current period"
-                  value={formatPeriod(
+                  value={formatSubscriptionPeriod(
                     subscription.current_period_starts_at,
                     subscription.current_period_ends_at,
                   )}
                 />
                 <SubscriptionMetric
                   label="Trial ends"
-                  value={formatDate(subscription.trial_ends_at) ?? "No trial"}
+                  value={formatSubscriptionDate(subscription.trial_ends_at) ?? "No trial"}
                 />
               </div>
 
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                <Link
+                  className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[#102019] transition hover:bg-[#eef7f1] sm:w-auto"
+                  href={`/subscriptions/${subscription.id}`}
+                >
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  View detail
+                </Link>
                 {subscription.status === "canceled" ? (
                   <Button
                     className="w-full sm:w-auto"
@@ -360,27 +371,6 @@ function SubscriptionSkeleton() {
       ))}
     </section>
   );
-}
-
-function formatDate(value: string | null) {
-  if (!value) {
-    return null;
-  }
-
-  return new Intl.DateTimeFormat("en-ZA", {
-    dateStyle: "medium",
-  }).format(new Date(value));
-}
-
-function formatPeriod(startsAt: string | null, endsAt: string | null) {
-  const start = formatDate(startsAt);
-  const end = formatDate(endsAt);
-
-  if (!start || !end) {
-    return "Not set";
-  }
-
-  return `${start} to ${end}`;
 }
 
 function errorMessage(error: unknown, fallback: string) {

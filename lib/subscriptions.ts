@@ -13,6 +13,14 @@ export async function listSubscriptions() {
   return response.data.data;
 }
 
+export async function getSubscription(subscriptionId: number) {
+  const response = await api.get<ApiResource<Subscription>>(
+    `/subscriptions/${subscriptionId}`,
+  );
+
+  return response.data.data;
+}
+
 export async function createSubscription(payload: SubscriptionPayload) {
   const response = await api.post<ApiResource<Subscription>>(
     "/subscriptions",
@@ -78,4 +86,25 @@ export function formatSubscriptionAmount(
 
 export function statusLabel(status: SubscriptionStatus) {
   return status.replace("_", " ").replace(/^\w/, (letter) => letter.toUpperCase());
+}
+
+export function formatSubscriptionPeriod(startsAt: string | null, endsAt: string | null) {
+  const start = formatSubscriptionDate(startsAt);
+  const end = formatSubscriptionDate(endsAt);
+
+  if (!start || !end) {
+    return "Not set";
+  }
+
+  return `${start} to ${end}`;
+}
+
+export function formatSubscriptionDate(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat("en-ZA", {
+    dateStyle: "medium",
+  }).format(new Date(value));
 }
