@@ -12,6 +12,8 @@ import {
   Users,
   WalletCards,
 } from "lucide-react";
+import type { EChartsOption } from "echarts";
+import { DashboardChart } from "@/components/dashboard/dashboard-chart";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -20,6 +22,8 @@ import {
   dashboardHealthLabel,
   formatDashboardMoney,
   getDashboardSummary,
+  paymentHealthSeries,
+  subscriptionStatusSeries,
 } from "@/lib/dashboard";
 import { useAuth } from "@/lib/auth-context";
 import type { DashboardSummary } from "@/types/dashboard";
@@ -134,6 +138,22 @@ export default function DashboardPage() {
         },
       ]
     : [];
+  const subscriptionSeries = useMemo(
+    () => (summary ? subscriptionStatusSeries(summary) : []),
+    [summary],
+  );
+  const paymentSeries = useMemo(
+    () => (summary ? paymentHealthSeries(summary) : []),
+    [summary],
+  );
+  const subscriptionChartOption = useMemo(
+    () => statusDonutOption(subscriptionSeries, "Subscriptions"),
+    [subscriptionSeries],
+  );
+  const paymentChartOption = useMemo(
+    () => paymentBarOption(paymentSeries),
+    [paymentSeries],
+  );
 
   return (
     <>
@@ -225,6 +245,29 @@ export default function DashboardPage() {
                 <DashboardPill label="Open invoices" value={summary.invoices.open} />
                 <DashboardPill label="Overdue" value={summary.invoices.overdue} />
               </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-2">
+              <ChartPanel
+                description="Subscription mix by lifecycle status."
+                items={subscriptionSeries}
+                title="Subscription status"
+              >
+                <DashboardChart
+                  ariaLabel="Subscription status chart"
+                  option={subscriptionChartOption}
+                />
+              </ChartPanel>
+              <ChartPanel
+                description="Provider payment outcomes from webhook records."
+                items={paymentSeries}
+                title="Payment health"
+              >
+                <DashboardChart
+                  ariaLabel="Payment health chart"
+                  option={paymentChartOption}
+                />
+              </ChartPanel>
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -330,6 +373,43 @@ export default function DashboardPage() {
   );
 }
 
+function ChartPanel({
+  children,
+  description,
+  items,
+  title,
+}: {
+  children: React.ReactNode;
+  description: string;
+  items: Array<{ color: string; label: string; value: number }>;
+  title: string;
+}) {
+  return (
+    <div className="rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-4">
+      <div className="flex flex-col gap-1">
+        <h3 className="text-sm font-bold text-[#102019]">{title}</h3>
+        <p className="text-sm leading-6 text-[var(--muted)]">{description}</p>
+      </div>
+      <div className="mt-3 min-w-0">{children}</div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {items.map((item) => (
+          <span
+            className="inline-flex items-center gap-2 rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#365548]"
+            key={item.label}
+          >
+            <span
+              aria-hidden="true"
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: item.color }}
+            />
+            {item.label}: {item.value}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function DashboardPill({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="rounded-md bg-[#f4fbf6] p-3">
@@ -379,6 +459,101 @@ function DashboardSkeleton() {
       <div className="h-80 animate-pulse rounded-lg border border-[var(--border)] bg-[#e8f2ec] sm:col-span-2 xl:col-span-4" />
     </section>
   );
+}
+
+function statusDonutOption(
+  items: Array<{ color: string; label: string; value: number }>,
+  title: string,
+): EChartsOption {
+  return {
+    color: items.map((item) => item.color),
+    series: [
+      {
+        avoidLabelOverlap: true,
+        data: items.map((item) => ({
+          name: item.label,
+          value: item.value,
+        })),
+        emphasis: {
+          label: {
+            fontSize: 18,
+            fontWeight: 700,
+            show: true,
+          },
+        },
+        label: {
+          color: "#365548",
+          formatter: "{b}: {c}",
+        },
+        name: title,
+        radius: ["48%", "72%"],
+        type: "pie",
+      },
+    ],
+    tooltip: {
+      trigger: "item",
+      valueFormatter: (value) => String(value),
+    },
+  };
+}
+
+function paymentBarOption(
+  items: Array<{ color: string; label: string; value: number }>,
+): EChartsOption {
+  return {
+    grid: {
+      bottom: 24,
+      containLabel: true,
+      left: 12,
+      right: 16,
+      top: 24,
+    },
+    series: [
+      {
+        barMaxWidth: 42,
+        data: items.map((item) => ({
+          itemStyle: {
+            color: item.color,
+            borderRadius: [6, 6, 0, 0],
+          },
+          value: item.value,
+        })),
+        type: "bar",
+      },
+    ],
+    tooltip: {
+      trigger: "axis",
+      valueFormatter: (value) => String(value),
+    },
+    xAxis: {
+      axisLabel: {
+        color: "#587064",
+        fontWeight: 700,
+        interval: 0,
+      },
+      axisLine: {
+        lineStyle: {
+          color: "#d8e7dd",
+        },
+      },
+      axisTick: {
+        show: false,
+      },
+      data: items.map((item) => item.label),
+      type: "category",
+    },
+    yAxis: {
+      axisLabel: {
+        color: "#587064",
+      },
+      splitLine: {
+        lineStyle: {
+          color: "#e8f2ec",
+        },
+      },
+      type: "value",
+    },
+  };
 }
 
 function errorMessage(error: unknown, fallback: string) {
