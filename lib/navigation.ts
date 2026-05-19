@@ -5,6 +5,7 @@ import {
   FileText,
   LayoutDashboard,
   ListChecks,
+  LockKeyhole,
   Receipt,
   Settings,
   ShieldCheck,
@@ -66,6 +67,12 @@ export const navigationItems: NavigationItem[] = [
     label: "AI Assist",
     description: "Billing summaries and payment failure drafts.",
     icon: Bot,
+  },
+  {
+    href: "/admin",
+    label: "Admin",
+    description: "Account access, billing readiness, and admin next steps.",
+    icon: LockKeyhole,
   },
   {
     href: "/settings",
