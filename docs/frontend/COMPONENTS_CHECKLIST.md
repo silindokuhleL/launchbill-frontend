@@ -41,7 +41,9 @@
 - [x] Subscription status panel.
 - [x] Invoice card.
 - [x] Invoice detail modal.
-- [ ] Payment status timeline.
+- [x] Payment card.
+- [x] Payment detail modal.
+- [x] Payment status timeline.
 - [ ] Failed payment alert.
 
 ## Feedback

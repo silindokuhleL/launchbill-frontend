@@ -51,6 +51,7 @@
 - [x] Invoices page.
 - [x] Invoice detail view.
 - [x] Payments page.
+- [x] Payment detail view.
 - [x] Team and roles page.
 - [ ] Admin portal page.
 - [x] Theme customization page.

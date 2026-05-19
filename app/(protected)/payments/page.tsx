@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { PaymentsClient } from "@/components/payments/payments-client";
 
 export default function PaymentsPage() {
-  return <ModulePage actionLabel="Add payments after PayFast webhooks" />;
+  return <PaymentsClient />;
 }
