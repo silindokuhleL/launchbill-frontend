@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   billingSummaryToEditableText,
   generateBillingSummaryDraft,
+  generatePaymentFailureDraft,
+  paymentFailureDraftToEditableText,
 } from "@/lib/ai";
 import type { DashboardSummary } from "@/types/dashboard";
 import type { Invoice } from "@/types/invoices";
@@ -94,6 +96,7 @@ const payment: Payment = {
   failed_at: "2026-05-12T10:00:00.000000Z",
   failure_reason: "Insufficient funds",
   id: 1,
+  invoice,
   invoice_id: 1,
   metadata: {},
   paid_at: null,
@@ -132,5 +135,30 @@ describe("AI billing helpers", () => {
         title: "Waiting on customer payments",
       }),
     ).toContain("Recommended next actions");
+  });
+
+  it("generates an editable payment failure draft", () => {
+    const draft = generatePaymentFailureDraft({
+      ...payment,
+      customer: {
+        account_id: 1,
+        billing_address: {},
+        company_name: "Northstar Analytics",
+        created_at: null,
+        email: "naledi@northstar.example",
+        id: 1,
+        name: "Naledi Mokoena",
+        notes: null,
+        phone: null,
+        provider_customer_id: null,
+        status: "active",
+        updated_at: null,
+      },
+    });
+
+    expect(draft.subject).toContain("INV-2026-0003");
+    expect(draft.body).toContain("Naledi Mokoena");
+    expect(draft.body).toContain("Insufficient funds");
+    expect(paymentFailureDraftToEditableText(draft)).toContain("Subject:");
   });
 });
