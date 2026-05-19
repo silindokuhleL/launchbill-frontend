@@ -36,13 +36,14 @@
 - [x] Reusable empty state.
 - [ ] Reusable error state.
 - [x] Reusable skeleton.
-- [ ] ECharts wrapper.
+- [x] ECharts wrapper.
 
 ## Pages
 
 - [x] Login page.
 - [x] Dashboard overview.
 - [x] Dashboard summary API integration.
+- [x] Dashboard charts.
 - [x] Plans page.
 - [x] Customers page.
 - [x] Customer create, edit, and archive actions.

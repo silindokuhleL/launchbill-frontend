@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { dashboardHealthLabel, formatDashboardMoney } from "@/lib/dashboard";
+import {
+  dashboardHealthLabel,
+  formatDashboardMoney,
+  paymentHealthSeries,
+  subscriptionStatusSeries,
+} from "@/lib/dashboard";
 import type { DashboardSummary } from "@/types/dashboard";
 
 const summary: DashboardSummary = {
@@ -82,5 +87,20 @@ describe("dashboard helpers", () => {
         payments: { ...summary.payments, failed: 0, pending: 0 },
       }),
     ).toBe("Billing is healthy");
+  });
+
+  it("maps dashboard summary into chart series", () => {
+    expect(subscriptionStatusSeries(summary)).toEqual([
+      expect.objectContaining({ label: "Active", value: 1 }),
+      expect.objectContaining({ label: "Trialing", value: 1 }),
+      expect.objectContaining({ label: "Paused", value: 1 }),
+      expect.objectContaining({ label: "Past due", value: 0 }),
+    ]);
+    expect(paymentHealthSeries(summary)).toEqual([
+      expect.objectContaining({ label: "Succeeded", value: 1 }),
+      expect.objectContaining({ label: "Pending", value: 1 }),
+      expect.objectContaining({ label: "Failed", value: 1 }),
+      expect.objectContaining({ label: "Refunded", value: 0 }),
+    ]);
   });
 });
