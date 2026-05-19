@@ -7,7 +7,7 @@
 - [ ] Confirm Base UI usage boundaries.
 - [ ] Confirm state management strategy.
 - [ ] Confirm API base URL strategy.
-- [ ] Confirm AI screens and components.
+- [x] Confirm AI screens and components.
 
 ## Foundation
 
@@ -62,12 +62,12 @@
 
 ## AI
 
-- [ ] Billing summary assistant UI.
+- [x] Billing summary assistant UI.
 - [ ] Payment failure draft assistant UI.
 - [ ] Admin activity insight UI.
-- [ ] AI loading states.
-- [ ] AI error states.
-- [ ] Editable AI output flow.
+- [x] AI loading states.
+- [x] AI error states.
+- [x] Editable AI output flow.
 
 ## Quality
 
