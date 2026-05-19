@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   dashboardHealthLabel,
+  formatDashboardDate,
   formatDashboardMoney,
   paymentHealthSeries,
+  recentInvoicesForDashboard,
   subscriptionStatusSeries,
 } from "@/lib/dashboard";
 import type { DashboardSummary } from "@/types/dashboard";
+import type { Invoice } from "@/types/invoices";
 
 const summary: DashboardSummary = {
   account: {
@@ -61,6 +64,29 @@ const summary: DashboardSummary = {
   },
 };
 
+const invoice: Invoice = {
+  id: 1,
+  account_id: 1,
+  customer_id: 1,
+  subscription_id: 1,
+  provider_invoice_id: "demo_inv_001",
+  number: "INV-2026-0001",
+  amount_due_cents: 49800,
+  amount_due: "498.00",
+  amount_paid_cents: 49800,
+  amount_paid: "498.00",
+  currency: "ZAR",
+  status: "paid",
+  issued_at: "2026-05-10T10:00:00.000000Z",
+  due_at: "2026-05-24T10:00:00.000000Z",
+  paid_at: "2026-05-12T10:00:00.000000Z",
+  voided_at: null,
+  line_items: [],
+  metadata: {},
+  created_at: "2026-05-10T10:00:00.000000Z",
+  updated_at: "2026-05-12T10:00:00.000000Z",
+};
+
 describe("dashboard helpers", () => {
   it("formats dashboard money", () => {
     expect(
@@ -102,5 +128,23 @@ describe("dashboard helpers", () => {
       expect.objectContaining({ label: "Failed", value: 1 }),
       expect.objectContaining({ label: "Refunded", value: 0 }),
     ]);
+  });
+
+  it("sorts and limits recent invoices for the dashboard", () => {
+    expect(
+      recentInvoicesForDashboard(
+        [
+          { ...invoice, id: 1, number: "INV-2026-0001", issued_at: "2026-05-10T10:00:00.000000Z" },
+          { ...invoice, id: 2, number: "INV-2026-0002", issued_at: "2026-05-18T10:00:00.000000Z" },
+          { ...invoice, id: 3, number: "INV-2026-0003", issued_at: "2026-05-12T10:00:00.000000Z" },
+        ],
+        2,
+      ).map((item) => item.number),
+    ).toEqual(["INV-2026-0002", "INV-2026-0003"]);
+  });
+
+  it("formats dashboard dates", () => {
+    expect(formatDashboardDate("2026-05-24T10:00:00.000000Z")).toContain("2026");
+    expect(formatDashboardDate(null)).toBe("Not set");
   });
 });

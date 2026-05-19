@@ -6,6 +6,7 @@ import {
   Activity,
   Bot,
   CreditCard,
+  FileText,
   Receipt,
   RefreshCcw,
   TrendingUp,
@@ -20,19 +21,39 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
 import {
   dashboardHealthLabel,
+  formatDashboardDate,
   formatDashboardMoney,
   getDashboardSummary,
   paymentHealthSeries,
+  recentInvoicesForDashboard,
   subscriptionStatusSeries,
 } from "@/lib/dashboard";
+import {
+  formatInvoiceAmount,
+  invoiceBalanceCents,
+  invoiceStatusLabel,
+  listInvoices,
+} from "@/lib/invoices";
 import { useAuth } from "@/lib/auth-context";
 import type { DashboardSummary } from "@/types/dashboard";
+import type { Invoice, InvoiceStatus } from "@/types/invoices";
+
+const invoiceStatusStyles: Record<InvoiceStatus, string> = {
+  draft: "bg-[#edf1f5] text-[#344054]",
+  open: "bg-[#e6f5ff] text-[#075985]",
+  overdue: "bg-[#fff4df] text-[#8a4a00]",
+  paid: "bg-[#e5f4eb] text-[var(--brand-dark)]",
+  void: "bg-[#f4ebe8] text-[#8f2a1f]",
+};
 
 export default function DashboardPage() {
   const auth = useAuth();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInvoicesLoading, setIsInvoicesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [invoiceError, setInvoiceError] = useState<string | null>(null);
   const activeAccount = useMemo(
     () => auth.user?.accounts.find((account) => account.id === auth.activeAccountId),
     [auth.activeAccountId, auth.user?.accounts],
@@ -46,6 +67,7 @@ export default function DashboardPage() {
   const canViewDashboard = Boolean(
     activeAccount?.permissions.includes("dashboard.view"),
   );
+  const canViewInvoices = Boolean(activeAccount?.permissions.includes("invoices.view"));
 
   const loadSummary = useCallback(async () => {
     if (!auth.activeAccountId || !canViewDashboard) {
@@ -65,6 +87,25 @@ export default function DashboardPage() {
       setIsLoading(false);
     }
   }, [auth.activeAccountId, canViewDashboard]);
+
+  const loadRecentInvoices = useCallback(async () => {
+    if (!auth.activeAccountId || !canViewInvoices) {
+      setRecentInvoices([]);
+      setIsInvoicesLoading(false);
+      return;
+    }
+
+    setIsInvoicesLoading(true);
+    setInvoiceError(null);
+
+    try {
+      setRecentInvoices(recentInvoicesForDashboard(await listInvoices()));
+    } catch (caughtError) {
+      setInvoiceError(errorMessage(caughtError, "Could not load recent invoices."));
+    } finally {
+      setIsInvoicesLoading(false);
+    }
+  }, [auth.activeAccountId, canViewInvoices]);
 
   useEffect(() => {
     let isMounted = true;
@@ -103,6 +144,44 @@ export default function DashboardPage() {
       isMounted = false;
     };
   }, [auth.activeAccountId, canViewDashboard]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchRecentInvoices() {
+      if (!auth.activeAccountId || !canViewInvoices) {
+        if (isMounted) {
+          setRecentInvoices([]);
+          setIsInvoicesLoading(false);
+        }
+
+        return;
+      }
+
+      try {
+        const nextInvoices = recentInvoicesForDashboard(await listInvoices());
+
+        if (isMounted) {
+          setRecentInvoices(nextInvoices);
+          setInvoiceError(null);
+        }
+      } catch (caughtError) {
+        if (isMounted) {
+          setInvoiceError(errorMessage(caughtError, "Could not load recent invoices."));
+        }
+      } finally {
+        if (isMounted) {
+          setIsInvoicesLoading(false);
+        }
+      }
+    }
+
+    void fetchRecentInvoices();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [auth.activeAccountId, canViewInvoices]);
 
   const metricCards = summary
     ? [
@@ -168,7 +247,13 @@ export default function DashboardPage() {
           {activeAccount?.name ?? "No account selected"}
         </div>
         {canViewDashboard ? (
-          <Button onClick={loadSummary} variant="secondary">
+          <Button
+            onClick={() => {
+              void loadSummary();
+              void loadRecentInvoices();
+            }}
+            variant="secondary"
+          >
             <RefreshCcw className="h-4 w-4" aria-hidden="true" />
             Refresh
           </Button>
@@ -178,6 +263,9 @@ export default function DashboardPage() {
       <div className="grid gap-4" aria-live="polite">
         {error ? (
           <Alert title="Dashboard needs attention" message={error} tone="error" />
+        ) : null}
+        {invoiceError ? (
+          <Alert title="Recent invoices need attention" message={invoiceError} tone="error" />
         ) : null}
       </div>
 
@@ -300,6 +388,12 @@ export default function DashboardPage() {
               />
             </div>
           </section>
+
+          <RecentInvoicesPanel
+            canViewInvoices={canViewInvoices}
+            invoices={recentInvoices}
+            isLoading={isInvoicesLoading}
+          />
         </>
       ) : (
         <EmptyState
@@ -370,6 +464,145 @@ export default function DashboardPage() {
         />
       </div>
     </>
+  );
+}
+
+function RecentInvoicesPanel({
+  canViewInvoices,
+  invoices,
+  isLoading,
+}: {
+  canViewInvoices: boolean;
+  invoices: Invoice[];
+  isLoading: boolean;
+}) {
+  return (
+    <section className="mt-6 rounded-lg border border-[var(--border)] bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+            Invoice follow-up
+          </p>
+          <h2 className="mt-2 text-xl font-bold text-[#102019]">Recent invoices</h2>
+          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+            Keep the newest billing documents visible without leaving the dashboard.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-2 rounded-md bg-[#e5f4eb] px-3 py-2 text-sm font-bold text-[var(--brand-dark)]">
+          <FileText className="h-4 w-4" aria-hidden="true" />
+          {invoices.length} shown
+        </div>
+      </div>
+
+      {!canViewInvoices ? (
+        <div className="mt-5 rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-4 text-sm font-semibold text-[var(--muted)]">
+          Invoice visibility is controlled by the invoices.view permission.
+        </div>
+      ) : isLoading ? (
+        <div className="mt-5 grid gap-3">
+          {[0, 1, 2].map((item) => (
+            <div
+              className="h-20 animate-pulse rounded-md border border-[var(--border)] bg-[#e8f2ec]"
+              key={item}
+            />
+          ))}
+        </div>
+      ) : invoices.length === 0 ? (
+        <div className="mt-5 rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-4 text-sm font-semibold text-[var(--muted)]">
+          No invoices have been issued for this account yet.
+        </div>
+      ) : (
+        <>
+          <div className="mt-5 hidden overflow-hidden rounded-md border border-[#d8e7dd] md:block">
+            <table className="w-full table-fixed border-collapse text-left text-sm">
+              <thead className="bg-[#f4fbf6] text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
+                <tr>
+                  <th className="px-4 py-3">Invoice</th>
+                  <th className="px-4 py-3">Customer</th>
+                  <th className="px-4 py-3">Amount</th>
+                  <th className="px-4 py-3">Balance</th>
+                  <th className="px-4 py-3">Due</th>
+                  <th className="px-4 py-3">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#d8e7dd]">
+                {invoices.map((invoice) => (
+                  <InvoiceRow invoice={invoice} key={invoice.id} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:hidden">
+            {invoices.map((invoice) => (
+              <InvoiceCard invoice={invoice} key={invoice.id} />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
+function InvoiceRow({ invoice }: { invoice: Invoice }) {
+  const balance = invoiceBalanceCents(invoice);
+
+  return (
+    <tr className="bg-white align-top">
+      <td className="break-words px-4 py-4 font-bold text-[#102019]">{invoice.number}</td>
+      <td className="break-words px-4 py-4 font-semibold text-[#365548]">
+        {invoice.customer?.name ?? `Customer #${invoice.customer_id}`}
+      </td>
+      <td className="px-4 py-4 font-semibold text-[#102019]">
+        {formatInvoiceAmount(invoice)}
+      </td>
+      <td className="px-4 py-4 font-semibold text-[#102019]">
+        ZAR {(balance / 100).toFixed(2)}
+      </td>
+      <td className="px-4 py-4 font-semibold text-[#365548]">
+        {formatDashboardDate(invoice.due_at)}
+      </td>
+      <td className="px-4 py-4">
+        <InvoiceStatusBadge status={invoice.status} />
+      </td>
+    </tr>
+  );
+}
+
+function InvoiceCard({ invoice }: { invoice: Invoice }) {
+  const balance = invoiceBalanceCents(invoice);
+
+  return (
+    <article className="rounded-md border border-[#d8e7dd] bg-[#fbfdfc] p-4">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="break-words text-base font-bold text-[#102019]">
+              {invoice.number}
+            </h3>
+            <p className="mt-1 text-sm font-semibold text-[var(--muted)]">
+              {invoice.customer?.name ?? `Customer #${invoice.customer_id}`}
+            </p>
+          </div>
+          <InvoiceStatusBadge status={invoice.status} />
+        </div>
+        <div className="grid gap-2 text-sm">
+          <DashboardPill label="Amount" value={formatInvoiceAmount(invoice)} />
+          <DashboardPill label="Balance" value={`ZAR ${(balance / 100).toFixed(2)}`} />
+          <DashboardPill label="Due" value={formatDashboardDate(invoice.due_at)} />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function InvoiceStatusBadge({ status }: { status: InvoiceStatus }) {
+  return (
+    <span
+      className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-bold ${invoiceStatusStyles[status]}`}
+    >
+      {invoiceStatusLabel(status)}
+    </span>
   );
 }
 

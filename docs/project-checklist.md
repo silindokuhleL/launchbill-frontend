@@ -44,6 +44,7 @@
 - [x] Dashboard overview.
 - [x] Dashboard summary API integration.
 - [x] Dashboard charts.
+- [x] Dashboard recent invoices.
 - [x] Plans page.
 - [x] Customers page.
 - [x] Customer create, edit, and archive actions.
