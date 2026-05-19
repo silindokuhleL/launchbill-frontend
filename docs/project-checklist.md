@@ -42,6 +42,7 @@
 
 - [x] Login page.
 - [x] Dashboard overview.
+- [x] Dashboard summary API integration.
 - [x] Plans page.
 - [x] Customers page.
 - [x] Customer create, edit, and archive actions.
