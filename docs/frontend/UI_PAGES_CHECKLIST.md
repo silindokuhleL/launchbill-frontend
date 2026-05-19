@@ -10,10 +10,10 @@
 ## Dashboard
 
 - [x] Dashboard overview page.
-- [ ] Revenue summary cards.
+- [x] Revenue summary cards.
 - [ ] Subscription status chart.
 - [ ] Recent invoices table.
-- [ ] Failed payment alert.
+- [x] Failed payment alert.
 
 ## Billing
 
@@ -65,6 +65,7 @@
 - [x] Subscription CRUD types are reused across page components.
 - [x] Invoice types are reused across page components.
 - [x] Payment types are reused across page components.
+- [x] Dashboard types are reused across page components.
 - [x] API calls use the shared Axios client.
 - [x] Lucide icons only.
 - [x] Vitest covers core frontend logic.
