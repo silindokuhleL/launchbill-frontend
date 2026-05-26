@@ -9,7 +9,12 @@ import {
   useState,
 } from "react";
 import { api, setApiToken } from "@/lib/api";
-import type { ApiResource, AuthenticatedUser, AuthSession } from "@/types/auth";
+import type {
+  ApiResource,
+  AuthenticatedUser,
+  AuthSession,
+  RegisterPayload,
+} from "@/types/auth";
 
 type AuthContextValue = {
   token: string | null;
@@ -18,6 +23,7 @@ type AuthContextValue = {
   isReady: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
   setActiveAccountId: (accountId: number | null) => void;
 };
@@ -102,6 +108,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [setActiveAccountId],
   );
 
+  const register = useCallback(
+    async (payload: RegisterPayload) => {
+      const response = await api.post<ApiResource<AuthSession>>("/auth/register", payload);
+
+      const session = response.data.data;
+      window.localStorage.setItem(tokenStorageKey, session.token);
+      setApiToken(session.token);
+      setToken(session.token);
+      setUser(session.user);
+      setActiveAccountId(session.user.accounts[0]?.id ?? null);
+    },
+    [setActiveAccountId],
+  );
+
   const logout = useCallback(async () => {
     try {
       await api.post("/auth/logout");
@@ -124,10 +144,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isReady,
       isAuthenticated: Boolean(token && user),
       login,
+      register,
       logout,
       setActiveAccountId,
     }),
-    [activeAccountId, isReady, login, logout, setActiveAccountId, token, user],
+    [activeAccountId, isReady, login, logout, register, setActiveAccountId, token, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

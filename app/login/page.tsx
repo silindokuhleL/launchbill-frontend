@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { KeyRound, ShieldCheck } from "lucide-react";
+import { ArrowRight, KeyRound, ShieldCheck } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { demoUsers } from "@/lib/demo-users";
@@ -115,6 +116,14 @@ export default function LoginPage() {
           <Button className="mt-6 w-full" isLoading={isSubmitting} type="submit">
             Sign in to dashboard
           </Button>
+
+          <Link
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[#102019] transition hover:bg-[#eef7f1]"
+            href="/register"
+          >
+            Create a new owner account
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </form>
       </section>
     </main>
