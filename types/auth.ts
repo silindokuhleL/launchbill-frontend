@@ -28,6 +28,25 @@ export type AuthSession = {
   user: AuthenticatedUser;
 };
 
+export type RegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+  account_name: string;
+  billing_email?: string | null;
+  device_name?: string;
+};
+
+export type RegistrationFormValues = {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  accountName: string;
+  billingEmail: string;
+};
+
 export type DemoUser = {
   label: string;
   email: string;
