@@ -46,6 +46,6 @@ Before frontend work, read:
 - Pull before branching.
 - Use focused task branches.
 - Make small commits.
-- Use Browser/Playwright for frontend verification.
+- Use the Codex in-app Browser plugin for frontend verification.
+- Do not use standalone Playwright for this project unless the user explicitly requests it.
 - Run relevant checks before merging.
-

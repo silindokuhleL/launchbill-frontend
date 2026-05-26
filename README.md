@@ -18,7 +18,7 @@ LaunchBill frontend provides the dashboard for account owners, billing managers,
 - Axios through a shared API client.
 - Shared `types/` folder for domain and CRUD types.
 - Vitest for frontend logic.
-- Playwright for critical browser flows.
+- Codex in-app Browser plugin for critical browser flows.
 - 100% mobile responsive layouts.
 - AI-assisted inputs and summaries where useful.
 
@@ -30,4 +30,3 @@ LaunchBill frontend provides the dashboard for account owners, billing managers,
 - `docs/frontend/COMPONENTS_CHECKLIST.md`
 - `docs/ai-features.md`
 - `docs/project-checklist.md`
-

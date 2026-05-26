@@ -99,6 +99,6 @@ LaunchBill should support account-level theme settings:
 ## Testing Standard
 
 - Use Vitest for core frontend logic.
-- Use Playwright for critical browser flows.
+- Use the Codex in-app Browser plugin for critical browser flows.
 - Test mobile responsiveness before marking UI tasks done.
 - Confirm no horizontal overflow.
