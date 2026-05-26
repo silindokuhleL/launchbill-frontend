@@ -34,7 +34,7 @@
 - [ ] Reusable dropdown.
 - [x] Reusable alert.
 - [x] Reusable empty state.
-- [ ] Reusable error state.
+- [x] Reusable error state.
 - [x] Reusable skeleton.
 - [x] ECharts wrapper.
 
