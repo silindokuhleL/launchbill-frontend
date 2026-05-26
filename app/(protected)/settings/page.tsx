@@ -1,5 +1,5 @@
-import { ModulePage } from "@/components/layout/module-page";
+import { ThemeCustomizationClient } from "@/components/settings/theme-customization-client";
 
 export default function SettingsPage() {
-  return <ModulePage actionLabel="Add settings after account resources" />;
+  return <ThemeCustomizationClient />;
 }
