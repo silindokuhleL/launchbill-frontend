@@ -52,7 +52,7 @@
 ## Responsiveness
 
 - [x] Works at 390px width.
-- [ ] Works at tablet width.
+- [x] Works at tablet width.
 - [x] Works at desktop width.
 - [x] Plans page uses cards instead of a horizontal table on mobile.
 - [x] Navigation is usable on phone.
