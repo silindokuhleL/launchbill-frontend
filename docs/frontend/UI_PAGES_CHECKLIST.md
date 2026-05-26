@@ -3,7 +3,7 @@
 ## Public And Auth
 
 - [x] Login page.
-- [ ] Register or invite page.
+- [x] Register or invite page.
 - [ ] Forgot password page if auth flow supports it.
 - [x] Auth error state.
 
