@@ -47,7 +47,7 @@
 - [x] Settings page.
 - [x] Audit log page if included.
 - [x] Admin portal page.
-- [ ] Theme customization page.
+- [x] Theme customization page.
 
 ## Responsiveness
 
