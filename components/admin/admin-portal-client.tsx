@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AxiosError } from "axios";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -23,11 +22,13 @@ import {
 } from "@/lib/admin";
 import { useAuth } from "@/lib/auth-context";
 import { formatDashboardMoney, getDashboardSummary } from "@/lib/dashboard";
+import { getApiErrorMessage } from "@/lib/error-messages";
 import { listInvoices } from "@/lib/invoices";
 import { listPayments } from "@/lib/payments";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
 import { SkeletonPanel } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/page-header";
 import type { DashboardSummary } from "@/types/dashboard";
@@ -93,6 +94,7 @@ export function AdminPortalClient() {
     account: activeAccount,
     user: auth.user,
   });
+  const shouldShowPageError = Boolean(error && canAccess && !isLoading && !portalData);
 
   useEffect(() => {
     let isMounted = true;
@@ -122,7 +124,7 @@ export function AdminPortalClient() {
         }
       } catch (caughtError) {
         if (isMounted) {
-          setError(errorMessage(caughtError, "Could not load admin portal data."));
+          setError(getApiErrorMessage(caughtError, "Could not load admin portal data."));
         }
       } finally {
         if (isMounted) {
@@ -148,7 +150,7 @@ export function AdminPortalClient() {
         setError(null);
       })
       .catch((caughtError) => {
-        setError(errorMessage(caughtError, "Could not refresh admin portal data."));
+        setError(getApiErrorMessage(caughtError, "Could not refresh admin portal data."));
       })
       .finally(() => setIsLoading(false));
   }
@@ -193,11 +195,19 @@ export function AdminPortalClient() {
             </div>
           </section>
 
-          {error ? (
+          {error && !shouldShowPageError ? (
             <Alert title="Admin portal needs attention" message={error} tone="error" />
           ) : null}
 
-          {isLoading ? (
+          {shouldShowPageError && error ? (
+            <ErrorState
+              actionLabel="admin portal"
+              isRetrying={isLoading}
+              message={error}
+              onRetry={refreshPortalData}
+              title="Admin portal could not load"
+            />
+          ) : isLoading ? (
             <SkeletonPanel />
           ) : portalData && activeAccount ? (
             <div className="grid gap-6">
@@ -391,12 +401,4 @@ function ChipGroup({ label, values }: { label: string; values: string[] }) {
       </div>
     </div>
   );
-}
-
-function errorMessage(error: unknown, fallback: string) {
-  if (error instanceof AxiosError) {
-    return error.response?.data?.message ?? error.message ?? fallback;
-  }
-
-  return fallback;
 }
