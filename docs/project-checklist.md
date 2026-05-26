@@ -18,7 +18,7 @@
 - [x] Configure Axios client.
 - [x] Add shared `types/` folder.
 - [x] Configure Vitest.
-- [ ] Configure Playwright.
+- [x] Configure Browser plugin verification.
 - [ ] Add localization-ready copy structure.
 
 ## Layout And Components

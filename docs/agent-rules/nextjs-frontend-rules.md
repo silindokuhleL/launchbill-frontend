@@ -13,7 +13,7 @@ These rules apply to Next.js frontend projects in this portfolio system.
 - ECharts for charts and reporting dashboards.
 - Axios for API calls.
 - Vitest for frontend unit and integration tests.
-- Playwright for end-to-end browser testing.
+- Codex in-app Browser plugin for browser and responsive verification.
 
 ## Component Rules
 
@@ -56,7 +56,7 @@ These rules apply to Next.js frontend projects in this portfolio system.
 ## Responsive Rules
 
 - Every screen must be 100% mobile responsive.
-- Test at phone, tablet, and desktop widths.
+- Test at phone, tablet, and desktop widths with the Browser plugin.
 - No horizontal overflow.
 - Tables need a mobile strategy, such as stacked cards or responsive columns.
 

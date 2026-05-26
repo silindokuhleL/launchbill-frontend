@@ -6,7 +6,7 @@ These rules apply across frontend, backend, and documentation.
 
 - PHPUnit for Laravel backend tests.
 - Vitest for Next.js frontend tests.
-- Playwright for end-to-end browser tests.
+- Codex in-app Browser plugin for browser and responsive verification.
 - Axios for frontend HTTP requests.
 - Localization support for user-facing copy.
 
@@ -36,4 +36,3 @@ A feature is not done until:
 - Extract shared frontend types into `types/`.
 - Extract shared API behavior into one client.
 - Avoid copy-pasting tenant, role, logging, modal, table, and alert logic.
-
