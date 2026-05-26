@@ -74,7 +74,7 @@
 - [x] Vitest covers core frontend logic.
 - [x] Browser covers critical flows.
 - [x] Mobile width checked.
-- [ ] Tablet width checked.
+- [x] Tablet width checked.
 - [x] Desktop width checked.
 - [x] No horizontal overflow.
 - [ ] README updated.
