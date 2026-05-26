@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Edit3, PackagePlus, Plus, Trash2 } from "lucide-react";
-import { AxiosError } from "axios";
 import { archivePlan, createPlan, formatPlanPrice, listPlans, updatePlan } from "@/lib/plans";
 import { useAuth } from "@/lib/auth-context";
+import { getApiErrorMessage } from "@/lib/error-messages";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/layout/page-header";
 import { PlanFormModal } from "@/components/plans/plan-form-modal";
 import type { Plan, PlanPayload } from "@/types/plans";
@@ -27,6 +28,7 @@ export function PlansClient() {
     [auth.activeAccountId, auth.user?.accounts],
   );
   const canManagePlans = Boolean(activeAccount?.permissions.includes("plans.manage"));
+  const shouldShowPageError = Boolean(error && canManagePlans && !isLoading && plans.length === 0);
 
   const loadPlans = useCallback(async () => {
     if (!auth.activeAccountId || !canManagePlans) {
@@ -41,7 +43,7 @@ export function PlansClient() {
     try {
       setPlans(await listPlans());
     } catch (caughtError) {
-      setError(errorMessage(caughtError, "Could not load plans."));
+      setError(getApiErrorMessage(caughtError, "Could not load plans."));
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +71,7 @@ export function PlansClient() {
         }
       } catch (caughtError) {
         if (isMounted) {
-          setError(errorMessage(caughtError, "Could not load plans."));
+          setError(getApiErrorMessage(caughtError, "Could not load plans."));
         }
       } finally {
         if (isMounted) {
@@ -110,7 +112,7 @@ export function PlansClient() {
       setSelectedPlan(undefined);
       await loadPlans();
     } catch (caughtError) {
-      setError(errorMessage(caughtError, "Could not save the plan."));
+      setError(getApiErrorMessage(caughtError, "Could not save the plan."));
     } finally {
       setIsSubmitting(false);
     }
@@ -126,7 +128,7 @@ export function PlansClient() {
       setSuccess(`${plan.name} was archived.`);
       await loadPlans();
     } catch (caughtError) {
-      setError(errorMessage(caughtError, "Could not archive the plan."));
+      setError(getApiErrorMessage(caughtError, "Could not archive the plan."));
     } finally {
       setIsSubmitting(false);
     }
@@ -153,7 +155,9 @@ export function PlansClient() {
       </div>
 
       <div className="grid gap-4" aria-live="polite">
-        {error ? <Alert title="Plans need attention" message={error} tone="error" /> : null}
+        {error && !shouldShowPageError ? (
+          <Alert title="Plans need attention" message={error} tone="error" />
+        ) : null}
         {success ? <Alert title="Plans updated" message={success} tone="success" /> : null}
       </div>
 
@@ -163,6 +167,16 @@ export function PlansClient() {
             description="This account role can view billing basics, but plan management is reserved for owners or billing admins with the plans.manage permission."
             icon={PackagePlus}
             title="Plan management is restricted"
+          />
+        </div>
+      ) : shouldShowPageError && error ? (
+        <div className="mt-5">
+          <ErrorState
+            actionLabel="plans"
+            isRetrying={isLoading}
+            message={error}
+            onRetry={loadPlans}
+            title="Plans could not load"
           />
         </div>
       ) : isLoading ? (
@@ -284,12 +298,4 @@ function PlanSkeleton() {
       ))}
     </section>
   );
-}
-
-function errorMessage(error: unknown, fallback: string) {
-  if (error instanceof AxiosError) {
-    return error.response?.data?.message ?? fallback;
-  }
-
-  return fallback;
 }
