@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { X } from "lucide-react";
 import { formValuesToPlanPayload, planToFormValues } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import type { Plan, PlanFormValues, PlanPayload } from "@/types/plans";
 
 type PlanFormModalProps = {
@@ -40,32 +40,19 @@ export function PlanFormModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-end bg-[#071b12]/45 p-0 sm:place-items-center sm:p-6">
+    <Modal
+      closeLabel="Close plan form"
+      eyebrow="Plan catalog"
+      isCloseDisabled={isSubmitting}
+      isOpen={isOpen}
+      onClose={onClose}
+      title={plan ? "Edit plan" : "Create plan"}
+    >
       <form
-        className="max-h-[92vh] w-full overflow-y-auto rounded-t-lg bg-white p-5 shadow-xl sm:max-w-2xl sm:rounded-lg sm:p-6"
+        className="mt-6"
         onSubmit={handleSubmit}
       >
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
-              Plan catalog
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-[#102019]">
-              {plan ? "Edit plan" : "Create plan"}
-            </h2>
-          </div>
-          <button
-            aria-label="Close plan form"
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[var(--border)] text-[#102019] transition hover:bg-[#eef7f1]"
-            disabled={isSubmitting}
-            onClick={onClose}
-            type="button"
-          >
-            <X className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm font-bold text-[#102019]">
             Plan name
             <input
@@ -174,6 +161,6 @@ export function PlanFormModal({
           </Button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }
