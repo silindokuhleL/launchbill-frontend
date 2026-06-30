@@ -17,6 +17,7 @@ import type { EChartsOption } from "echarts";
 import { DashboardChart } from "@/components/dashboard/dashboard-chart";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
 import {
@@ -45,6 +46,45 @@ const invoiceStatusStyles: Record<InvoiceStatus, string> = {
   paid: "bg-[#e5f4eb] text-[var(--brand-dark)]",
   void: "bg-[#f4ebe8] text-[#8f2a1f]",
 };
+
+const recentInvoiceColumns: Array<DataTableColumn<Invoice>> = [
+  {
+    cell: (invoice) => invoice.number,
+    className: "font-bold text-[#102019]",
+    header: "Invoice",
+    key: "invoice",
+  },
+  {
+    cell: (invoice) => invoice.customer?.name ?? `Customer #${invoice.customer_id}`,
+    className: "font-semibold text-[#365548]",
+    header: "Customer",
+    key: "customer",
+  },
+  {
+    cell: (invoice) => formatInvoiceAmount(invoice),
+    className: "font-semibold text-[#102019]",
+    header: "Amount",
+    key: "amount",
+  },
+  {
+    cell: (invoice) => `ZAR ${(invoiceBalanceCents(invoice) / 100).toFixed(2)}`,
+    className: "font-semibold text-[#102019]",
+    header: "Balance",
+    key: "balance",
+  },
+  {
+    cell: (invoice) => formatDashboardDate(invoice.due_at),
+    className: "font-semibold text-[#365548]",
+    header: "Due",
+    key: "due",
+  },
+  {
+    cell: (invoice) => <InvoiceStatusBadge status={invoice.status} />,
+    className: "font-semibold",
+    header: "Status",
+    key: "status",
+  },
+];
 
 export default function DashboardPage() {
   const auth = useAuth();
@@ -512,60 +552,16 @@ function RecentInvoicesPanel({
           No invoices have been issued for this account yet.
         </div>
       ) : (
-        <>
-          <div className="mt-5 hidden overflow-hidden rounded-md border border-[#d8e7dd] md:block">
-            <table className="w-full table-fixed border-collapse text-left text-sm">
-              <thead className="bg-[#f4fbf6] text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
-                <tr>
-                  <th className="px-4 py-3">Invoice</th>
-                  <th className="px-4 py-3">Customer</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Balance</th>
-                  <th className="px-4 py-3">Due</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#d8e7dd]">
-                {invoices.map((invoice) => (
-                  <InvoiceRow invoice={invoice} key={invoice.id} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-5 grid gap-3 md:hidden">
-            {invoices.map((invoice) => (
-              <InvoiceCard invoice={invoice} key={invoice.id} />
-            ))}
-          </div>
-        </>
+        <div className="mt-5">
+          <DataTable
+            columns={recentInvoiceColumns}
+            data={invoices}
+            getRowKey={(invoice) => invoice.id}
+            mobileCard={(invoice) => <InvoiceCard invoice={invoice} />}
+          />
+        </div>
       )}
     </section>
-  );
-}
-
-function InvoiceRow({ invoice }: { invoice: Invoice }) {
-  const balance = invoiceBalanceCents(invoice);
-
-  return (
-    <tr className="bg-white align-top">
-      <td className="break-words px-4 py-4 font-bold text-[#102019]">{invoice.number}</td>
-      <td className="break-words px-4 py-4 font-semibold text-[#365548]">
-        {invoice.customer?.name ?? `Customer #${invoice.customer_id}`}
-      </td>
-      <td className="px-4 py-4 font-semibold text-[#102019]">
-        {formatInvoiceAmount(invoice)}
-      </td>
-      <td className="px-4 py-4 font-semibold text-[#102019]">
-        ZAR {(balance / 100).toFixed(2)}
-      </td>
-      <td className="px-4 py-4 font-semibold text-[#365548]">
-        {formatDashboardDate(invoice.due_at)}
-      </td>
-      <td className="px-4 py-4">
-        <InvoiceStatusBadge status={invoice.status} />
-      </td>
-    </tr>
   );
 }
 

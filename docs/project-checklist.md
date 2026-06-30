@@ -28,7 +28,7 @@
 - [x] Mobile navigation.
 - [x] Page header.
 - [x] Reusable modal.
-- [ ] Reusable table.
+- [x] Reusable table.
 - [x] Reusable button.
 - [ ] Reusable tooltip.
 - [ ] Reusable dropdown.

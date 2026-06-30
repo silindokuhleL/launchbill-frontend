@@ -16,7 +16,7 @@
 
 - [ ] Metric card.
 - [x] Status badge.
-- [ ] Data table.
+- [x] Data table.
 - [x] Empty state.
 - [ ] Error state.
 - [x] Loading skeleton.
