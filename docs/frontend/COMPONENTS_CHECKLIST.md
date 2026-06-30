@@ -7,7 +7,7 @@
 - [x] Mobile navigation.
 - [x] Page header.
 - [ ] Breadcrumbs if useful.
-- [ ] Reusable modal.
+- [x] Reusable modal.
 - [ ] Reusable tooltip.
 - [ ] Reusable dropdown.
 - [ ] Reusable alert.
