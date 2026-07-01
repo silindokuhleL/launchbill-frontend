@@ -8,7 +8,7 @@
 - [x] Page header.
 - [ ] Breadcrumbs if useful.
 - [x] Reusable modal.
-- [ ] Reusable tooltip.
+- [x] Reusable tooltip.
 - [ ] Reusable dropdown.
 - [ ] Reusable alert.
 
