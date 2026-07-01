@@ -19,6 +19,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Tooltip } from "@/components/ui/tooltip";
 import { PageHeader } from "@/components/layout/page-header";
 import {
   dashboardHealthLabel,
@@ -287,16 +288,21 @@ export default function DashboardPage() {
           {activeAccount?.name ?? "No account selected"}
         </div>
         {canViewDashboard ? (
-          <Button
-            onClick={() => {
-              void loadSummary();
-              void loadRecentInvoices();
-            }}
-            variant="secondary"
+          <Tooltip
+            content="Refresh dashboard metrics and recent invoices from the API."
+            side="left"
           >
-            <RefreshCcw className="h-4 w-4" aria-hidden="true" />
-            Refresh
-          </Button>
+            <Button
+              onClick={() => {
+                void loadSummary();
+                void loadRecentInvoices();
+              }}
+              variant="secondary"
+            >
+              <RefreshCcw className="h-4 w-4" aria-hidden="true" />
+              Refresh
+            </Button>
+          </Tooltip>
         ) : null}
       </div>
 
