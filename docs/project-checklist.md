@@ -30,7 +30,7 @@
 - [x] Reusable modal.
 - [x] Reusable table.
 - [x] Reusable button.
-- [ ] Reusable tooltip.
+- [x] Reusable tooltip.
 - [ ] Reusable dropdown.
 - [x] Reusable alert.
 - [x] Reusable empty state.
